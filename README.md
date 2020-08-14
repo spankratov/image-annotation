@@ -7,7 +7,7 @@ Simple test project: Django application with API for images and their annotation
 3. Locally send API requests to `http://localhost:8000` (no authentication required for simplicity)
 
 ## API
-1. Create image: `curl -v -F file=@yugz2apjanp41.png -F annotation='{"labels": {}}' http://localhost:8000/images/`
+1. Create image: `curl -v -F file=@yugz2apjanp41.png -F annotation='{"labels": []}' http://localhost:8000/images/`
 2. Update image annotation: `curl -H 'Content-Type: application/json' -X PUT -d '{"annotation": {"labels": []}}' http://localhost:8000/images/8/`
 3. Get image data (url and annotation): `curl -X GET "http://localhost:8000/images/8/"`
 4. Get image data in export format: `curl -X GET "http://localhost:8000/images/8/?format=export"`
@@ -27,4 +27,5 @@ Reasons to store annotation in json field:
 Should project requirement change, database schema must be migrated to separate tables to store annotation.
 
 ## Tests
-Run `python manage.py test` inside `backend` container
+1. `docker exec -it image-annotation_backend_1 bash`
+2. `python manage.py test`
