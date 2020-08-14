@@ -1,0 +1,41 @@
+version: '3.8'
+
+x-postgres:
+  &postgres-variables
+  POSTGRES_USER: 'image-annotation'
+  POSTGRES_PASSWORD: 'image-annotation'
+  POSTGRES_DB: 'image-annotation'
+  POSTGRES_PORT: '5432'
+  POSTGRES_HOST: 'postgres'
+
+x-backend:
+  &backend-variables
+  <<: *postgres-variables
+  MEDIA_ROOT: /media
+
+
+services:
+  postgres:
+    image: postgres:latest
+    environment: *postgres-variables
+    hostname: postgres
+    expose:
+      - '5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment: *backend-variables
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - postgres
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend:/app
+      - media:/media
+
+volumes:
+  postgres-data:
+  media:
